@@ -34,12 +34,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ******************************************************************************/
 #include <Arduino.h>
+#include <ER_GFX.h>
 #ifdef __AVR__
 	#include <avr/pgmspace.h>
 #else
 	#include <pgmspace.h>
 #endif
-#include <SFE_MicroOLED.h>
+#include <ER_MicroOLED.h>
 
 // This fixed ugly GCC warning "only initialized variables can be placed into program memory area"
 #undef PROGMEM
@@ -47,19 +48,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // Add header of the fonts here.  Remove as many as possible to conserve FLASH memory.
 #include "util/font5x7.h"
-#include "util/font8x16.h"
-#include "util/fontlargenumber.h"
-#include "util/7segment.h"
+// #include "util/font8x16.h"
+// #include "util/fontlargenumber.h"
+// #include "util/7segment.h"
 
 // Change the total fonts included
-#define TOTALFONTS		4
+#define TOTALFONTS		1
 
 // Add the font name as declared in the header file.  Remove as many as possible to conserve FLASH memory.
 const unsigned char *MicroOLED::fontsPointer[]={
 	font5x7
-	,font8x16
-	,sevensegment
-	,fontlargenumber
+// 	,font8x16
+// 	,sevensegment
+// 	,fontlargenumber
 };
 
 /** \brief MicroOLED screen buffer.
@@ -128,7 +129,7 @@ static uint8_t screenmemory [] = {
 	Setup the MicroOLED class, configure the display to be controlled via a
 	SPI interface.
 */
-MicroOLED::MicroOLED(uint8_t rst, uint8_t dc, uint8_t cs)
+MicroOLED::MicroOLED(uint8_t rst, uint8_t dc, uint8_t cs) : ER_GFX(LCDWIDTH,LCDHEIGHT) 
 {
 	// Assign each of the parameters to a private class variable.
 	rstPin = rst;
@@ -142,7 +143,7 @@ MicroOLED::MicroOLED(uint8_t rst, uint8_t dc, uint8_t cs)
 	Setup the MicroOLED class, configure the display to be controlled via a
 	I2C interface.
 */
-MicroOLED::MicroOLED(uint8_t rst, uint8_t dc)
+MicroOLED::MicroOLED(uint8_t rst, uint8_t dc) : ER_GFX(LCDWIDTH,LCDHEIGHT) 
 {
 	rstPin = rst;	// Assign reset pin to private class variable
 	interface = MODE_I2C;	// Set interface to I2C
@@ -162,7 +163,7 @@ MicroOLED::MicroOLED(uint8_t rst, uint8_t dc)
 */
 MicroOLED::MicroOLED(uint8_t rst, uint8_t dc, uint8_t cs, uint8_t wr, uint8_t rd,
 					uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
-					uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7)
+					uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7) : ER_GFX(LCDWIDTH,LCDHEIGHT) 
 {
 	interface = MODE_PARALLEL;	// Set to parallel mode
 	// Assign pin parameters to private class variables.
@@ -404,23 +405,23 @@ void MicroOLED::display(void) {
 
     Arduino's print overridden so that we can use uView.print().
 */
-size_t MicroOLED::write(uint8_t c) {
-	if (c == '\n') {
-		cursorY += fontHeight;
-		cursorX  = 0;
-	} else if (c == '\r') {
-		// skip
-	} else {
-		drawChar(cursorX, cursorY, c, foreColor, drawMode);
-		cursorX += fontWidth+1;
-		if ((cursorX > (LCDWIDTH - fontWidth))) {
-			cursorY += fontHeight;
-			cursorX = 0;
-		}
-	}
+// size_t MicroOLED::write(uint8_t c) {
+// 	if (c == '\n') {
+// 		cursorY += fontHeight*8;
+// 		cursorX  = 0;
+// 	} else if (c == '\r') {
+// 		// skip
+// 	} else {
+// 		drawChar(cursorX, cursorY, c, foreColor, drawMode);
+// 		cursorX += fontWidth+1;
+// 		if ((cursorX > (LCDWIDTH - fontWidth))) {
+// 			cursorY += fontHeight;
+// 			cursorX = 0;
+// 		}
+// 	}
 
-	return 1;
-}
+// 	return 1;
+// }
 
 /** \brief Set cursor position.
 
@@ -785,76 +786,76 @@ void MicroOLED::setDrawMode(uint8_t mode) {
 
     Draw character c using current color and current draw mode at x,y.
 */
-void  MicroOLED::drawChar(uint8_t x, uint8_t y, uint8_t c) {
-	drawChar(x,y,c,foreColor,drawMode);
-}
+// void  MicroOLED::drawChar(uint8_t x, uint8_t y, uint8_t c) {
+// 	drawChar(x,y,c,foreColor,drawMode);
+// }
 
 /** \brief Draw character with color and mode.
 
-    Draw character c using color and draw mode at x,y.
-*/
-void  MicroOLED::drawChar(uint8_t x, uint8_t y, uint8_t c, uint8_t color, uint8_t mode) {
-	// TODO - New routine to take font of any height, at the moment limited to font height in multiple of 8 pixels
+     Draw character c using color and draw mode at x,y.
+ */
+// void  MicroOLED::drawChar(uint8_t x, uint8_t y, uint8_t c, uint8_t color, uint8_t mode) {
+// 	// TODO - New routine to take font of any height, at the moment limited to font height in multiple of 8 pixels
 
-	uint8_t rowsToDraw,row, tempC;
-	uint8_t i,j,temp;
-	uint16_t charPerBitmapRow,charColPositionOnBitmap,charRowPositionOnBitmap,charBitmapStartPosition;
+// 	uint8_t rowsToDraw,row, tempC;
+// 	uint8_t i,j,temp;
+// 	uint16_t charPerBitmapRow,charColPositionOnBitmap,charRowPositionOnBitmap,charBitmapStartPosition;
 
-	if ((c<fontStartChar) || (c>(fontStartChar+fontTotalChar-1)))		// no bitmap for the required c
-	return;
+// 	if ((c<fontStartChar) || (c>(fontStartChar+fontTotalChar-1)))		// no bitmap for the required c
+// 	return;
 
-	tempC=c-fontStartChar;
+// 	tempC=c-fontStartChar;
 
-	// each row (in datasheet is call page) is 8 bits high, 16 bit high character will have 2 rows to be drawn
-	rowsToDraw=fontHeight/8;	// 8 is LCD's page size, see SSD1306 datasheet
-	if (rowsToDraw<=1) rowsToDraw=1;
+// 	// each row (in datasheet is call page) is 8 bits high, 16 bit high character will have 2 rows to be drawn
+// 	rowsToDraw=fontHeight/8;	// 8 is LCD's page size, see SSD1306 datasheet
+// 	if (rowsToDraw<=1) rowsToDraw=1;
 
-	// the following draw function can draw anywhere on the screen, but SLOW pixel by pixel draw
-	if (rowsToDraw==1) {
-		for  (i=0;i<fontWidth+1;i++) {
-			if (i==fontWidth) // this is done in a weird way because for 5x7 font, there is no margin, this code add a margin after col 5
-			temp=0;
-			else
-			temp=pgm_read_byte(fontsPointer[fontType]+FONTHEADERSIZE+(tempC*fontWidth)+i);
+// 	// the following draw function can draw anywhere on the screen, but SLOW pixel by pixel draw
+// 	if (rowsToDraw==1) {
+// 		for  (i=0;i<fontWidth+1;i++) {
+// 			if (i==fontWidth) // this is done in a weird way because for 5x7 font, there is no margin, this code add a margin after col 5
+// 			temp=0;
+// 			else
+// 			temp=pgm_read_byte(fontsPointer[fontType]+FONTHEADERSIZE+(tempC*fontWidth)+i);
 
-			for (j=0;j<8;j++) {			// 8 is the LCD's page height (see datasheet for explanation)
-				if (temp & 0x1) {
-					pixel(x+i, y+j, color,mode);
-				}
-				else {
-					pixel(x+i, y+j, !color,mode);
-				}
+// 			for (j=0;j<8;j++) {			// 8 is the LCD's page height (see datasheet for explanation)
+// 				if (temp & 0x1) {
+// 					pixel(x+i, y+j, color,mode);
+// 				}
+// 				else {
+// 					pixel(x+i, y+j, !color,mode);
+// 				}
 
-				temp >>=1;
-			}
-		}
-		return;
-	}
+// 				temp >>=1;
+// 			}
+// 		}
+// 		return;
+// 	}
 
-	// font height over 8 bit
-	// take character "0" ASCII 48 as example
-	charPerBitmapRow=fontMapWidth/fontWidth;  // 256/8 =32 char per row
-	charColPositionOnBitmap=tempC % charPerBitmapRow;  // =16
-	charRowPositionOnBitmap=int(tempC/charPerBitmapRow); // =1
-	charBitmapStartPosition=(charRowPositionOnBitmap * fontMapWidth * (fontHeight/8)) + (charColPositionOnBitmap * fontWidth) ;
+// 	// font height over 8 bit
+// 	// take character "0" ASCII 48 as example
+// 	charPerBitmapRow=fontMapWidth/fontWidth;  // 256/8 =32 char per row
+// 	charColPositionOnBitmap=tempC % charPerBitmapRow;  // =16
+// 	charRowPositionOnBitmap=int(tempC/charPerBitmapRow); // =1
+// 	charBitmapStartPosition=(charRowPositionOnBitmap * fontMapWidth * (fontHeight/8)) + (charColPositionOnBitmap * fontWidth) ;
 
-	// each row on LCD is 8 bit height (see datasheet for explanation)
-	for(row=0;row<rowsToDraw;row++) {
-		for (i=0; i<fontWidth;i++) {
-			temp=pgm_read_byte(fontsPointer[fontType]+FONTHEADERSIZE+(charBitmapStartPosition+i+(row*fontMapWidth)));
-			for (j=0;j<8;j++) {			// 8 is the LCD's page height (see datasheet for explanation)
-				if (temp & 0x1) {
-					pixel(x+i,y+j+(row*8), color, mode);
-				}
-				else {
-					pixel(x+i,y+j+(row*8), !color, mode);
-				}
-				temp >>=1;
-			}
-		}
-	}
+// 	// each row on LCD is 8 bit height (see datasheet for explanation)
+// 	for(row=0;row<rowsToDraw;row++) {
+// 		for (i=0; i<fontWidth;i++) {
+// 			temp=pgm_read_byte(fontsPointer[fontType]+FONTHEADERSIZE+(charBitmapStartPosition+i+(row*fontMapWidth)));
+// 			for (j=0;j<8;j++) {			// 8 is the LCD's page height (see datasheet for explanation)
+// 				if (temp & 0x1) {
+// 					pixel(x+i,y+j+(row*8), color, mode);
+// 				}
+// 				else {
+// 					pixel(x+i,y+j+(row*8), !color, mode);
+// 				}
+// 				temp >>=1;
+// 			}
+// 		}
+// 	}
 
-}
+// }
 
 /** \brief Stop scrolling.
 
@@ -923,4 +924,9 @@ void MicroOLED::drawBitmap(uint8_t * bitArray)
 {
   for (int i=0; i<(LCDWIDTH * LCDHEIGHT / 8); i++)
     screenmemory[i] = bitArray[i];
+}
+
+void MicroOLED::drawPixel(int16_t x, int16_t y, uint16_t color)
+{
+	pixel(x,y,color,drawMode);
 }

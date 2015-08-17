@@ -40,14 +40,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdio.h>
 #include <Arduino.h>
-
+#include <ER_GFX.h>
 #ifdef __AVR__
 	#include <avr/pgmspace.h>
 #else
 	#include <pgmspace.h>
 #endif
 
-#define swap(a, b) { uint8_t t = a; a = b; b = t; }
+// #define swap(a, b) { uint8_t t = a; a = b; b = t; }
 
 #define I2C_ADDRESS_SA0_0 0b0111100
 #define I2C_ADDRESS_SA0_1 0b0111101
@@ -132,7 +132,7 @@ typedef enum COMM_MODE{
 	MODE_PARALLEL
 } micro_oled_mode;
 
-class MicroOLED : public Print{
+class MicroOLED : public ER_GFX{
 public:
 	// Constructor(s)
 	MicroOLED(uint8_t rst, uint8_t dc, uint8_t cs);
@@ -142,7 +142,7 @@ public:
 			  uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7);
 	
 	void begin(void);
-	virtual size_t write(uint8_t);
+	// virtual size_t write(uint8_t);
 
 	// RAW LCD functions
 	void command(uint8_t c);
@@ -156,6 +156,7 @@ public:
 	void invert(boolean inv);
 	void contrast(uint8_t contrast);
 	void display(void);
+	void drawPixel(int16_t x, int16_t y, uint16_t color);
 	void setCursor(uint8_t x, uint8_t y);
 	void pixel(uint8_t x, uint8_t y);
 	void pixel(uint8_t x, uint8_t y, uint8_t color, uint8_t mode);
@@ -173,8 +174,8 @@ public:
 	void circle(uint8_t x, uint8_t y, uint8_t radius, uint8_t color, uint8_t mode);
 	void circleFill(uint8_t x0, uint8_t y0, uint8_t radius);
 	void circleFill(uint8_t x0, uint8_t y0, uint8_t radius, uint8_t color, uint8_t mode);
-	void drawChar(uint8_t x, uint8_t y, uint8_t c);
-	void drawChar(uint8_t x, uint8_t y, uint8_t c, uint8_t color, uint8_t mode);
+	// void drawChar(uint8_t x, uint8_t y, uint8_t c);
+	// void drawChar(uint8_t x, uint8_t y, uint8_t c, uint8_t color, uint8_t mode);
 	void drawBitmap(uint8_t * bitArray);
 	uint8_t getLCDWidth(void);
 	uint8_t getLCDHeight(void);

@@ -24,8 +24,8 @@
       CS  ------------------- D10 (can be any digital pin)
     
   Development environment specifics:
-  	IDE: Arduino 1.0.5
-  	Hardware Platform: MicroOLED Breakout
+    IDE: Arduino 1.0.5
+    Hardware Platform: MicroOLED Breakout
                            Arduino Pro 3.3V/8MHz
   
   Note: The display on the MicroOLED is a 1.8V-3.3V device only.
@@ -41,15 +41,15 @@
 *******************************************************************************/
 #include <Wire.h>  // Include Wire if you're using I2C
 #include <SPI.h>  // Include SPI if you're using SPI
-#include <SFE_MicroOLED.h>  // Include the SFE_MicroOLED library
+#include <ER_MicroOLED.h>  // Include the SFE_MicroOLED library
 
 //////////////////////////
 // MicroOLED Definition //
 //////////////////////////
-#define PIN_RESET 9  // Connect RST to pin 9 (req. for SPI and I2C)
+#define PIN_RESET 12  // Connect RST to pin 9 (req. for SPI and I2C)
 #define PIN_DC    8  // Connect DC to pin 8 (required for SPI)
 #define PIN_CS    10 // Connect CS to pin 10 (required for SPI)
-#define DC_JUMPER 0
+#define DC_JUMPER 1
 // Also connect pin 13 to SCK and pin 11 to MOSI
 
 //////////////////////////////////
@@ -59,8 +59,8 @@
 // 1 - Reset pin: Any digital pin
 // 2 - D/C pin: Any digital pin (SPI mode only)
 // 3 - CS pin: Any digital pin (SPI mode only, 10 recommended)
-MicroOLED oled(PIN_RESET, PIN_DC, PIN_CS);
-//MicroOLED oled(PIN_RESET, DC_JUMPER); // Example I2C declaration
+//MicroOLED oled(PIN_RESET, PIN_DC, PIN_CS);
+MicroOLED oled(PIN_RESET, DC_JUMPER); // Example I2C declaration
 
 // I2C is great, but will result in a much slower update rate. The
 // slower framerate may be a worthwhile tradeoff, if you need more
@@ -79,6 +79,14 @@ void setup()
   // To actually draw anything on the display, you must call the
   // display() function. 
   oled.display();   
+  delay(2000);
+  oled.clear(PAGE);
+  oled.clear(ALL);
+  oled.setCursor(0,0);
+  oled.setTextColor(WHITE);
+  oled.setTextSize(0);
+  oled.println("hello");
+  oled.display();
 }
 
 void loop()

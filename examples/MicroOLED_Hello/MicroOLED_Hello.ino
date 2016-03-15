@@ -47,8 +47,8 @@
 // MicroOLED Definition //
 //////////////////////////
 #define PIN_RESET 12  // Connect RST to pin 9 (req. for SPI and I2C)
-#define PIN_DC    8  // Connect DC to pin 8 (required for SPI)
-#define PIN_CS    10 // Connect CS to pin 10 (required for SPI)
+//#define PIN_DC    8  // Connect DC to pin 8 (required for SPI)
+//#define PIN_CS    10 // Connect CS to pin 10 (required for SPI)
 #define DC_JUMPER 1
 // Also connect pin 13 to SCK and pin 11 to MOSI
 
@@ -72,6 +72,7 @@ void setup()
   
   // Before you can start using the OLED, call begin() to init
   // all of the pins and configure the OLED.
+  Serial.begin(9600);
   oled.begin();
   // clear(ALL) will clear out the OLED's graphic memory.
   // clear(PAGE) will clear the Arduino's display buffer.
@@ -87,8 +88,40 @@ void setup()
   oled.setTextSize(0);
   oled.println("hello");
   oled.display();
+  pinMode(A0,INPUT);
 }
+
+int count = 0;
 
 void loop()
 {
+//  oled.setCursor(0,0);
+//  oled.clear(ALL);
+//  oled.clear(PAGE);
+//  oled.print("ADC: ");  
+//  oled.println(int(analogRead(A0)));
+//  oled.display();
+//  Serial.println(analogRead(A0));
+//  delay(500);
+//  if(analogRead(A0)<700)
+//  {
+//    ESP.deepSleep(0);
+//  }
+
+  
+  
+  if(Serial.available()>0)
+  {
+    if (count>20)
+    {
+      oled.clear(ALL);
+      oled.clear(PAGE);
+      oled.setCursor(0,0);
+      count=0;
+    }
+    oled.print(char(Serial.read()));
+    oled.display();
+    count++;
+  }
 }
+

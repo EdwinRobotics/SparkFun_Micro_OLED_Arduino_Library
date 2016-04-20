@@ -427,10 +427,10 @@ void MicroOLED::display(void) {
 
 MicroOLED's cursor position to x,y.
 */
-void MicroOLED::setCursor(uint8_t x, uint8_t y) {
-	cursorX=x;
-	cursorY=y;
-}
+// void MicroOLED::setCursor(uint8_t x, uint8_t y) {
+// 	cursorX=x;
+// 	cursorY=y;
+// }
 
 /** \brief Draw pixel.
 

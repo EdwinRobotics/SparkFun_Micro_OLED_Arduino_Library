@@ -157,7 +157,7 @@ public:
 	void contrast(uint8_t contrast);
 	void display(void);
 	void drawPixel(int16_t x, int16_t y, uint16_t color);
-	void setCursor(uint8_t x, uint8_t y);
+	// void setCursor(uint8_t x, uint8_t y);
 	void pixel(uint8_t x, uint8_t y);
 	void pixel(uint8_t x, uint8_t y, uint8_t color, uint8_t mode);
 	void line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
@@ -210,7 +210,7 @@ private:
 	byte i2c_address;
 	volatile uint8_t *ssport, *dcport, *ssreg, *dcreg;	// use volatile because these are fixed location port address
 	uint8_t mosipinmask, sckpinmask, sspinmask, dcpinmask;
-	uint8_t foreColor,drawMode,fontWidth, fontHeight, fontType, fontStartChar, fontTotalChar, cursorX, cursorY;
+	uint8_t foreColor,drawMode,fontWidth, fontHeight, fontType, fontStartChar, fontTotalChar;//, cursorX, cursorY;
 	uint16_t fontMapWidth;
 	static const unsigned char *fontsPointer[];
 	
